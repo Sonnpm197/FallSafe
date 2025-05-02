@@ -16,3 +16,18 @@ class NN_Model(nn.Module):
 
     def forward(self, x):
         return self.classifier(x)
+
+class NN_Model_NO_CONF(nn.Module):
+    def __init__(self):
+        super(NN_Model_NO_CONF, self).__init__()
+        self.classifier = nn.Sequential(
+            nn.Linear(34, 128),     # Input layer: 51 → 128
+            nn.ReLU(),
+            nn.Linear(128, 64),     # Hidden layer: 128 → 64
+            nn.ReLU(),
+            nn.Linear(64, 1),       # Output layer: 64 → 1
+            nn.Sigmoid()            # Because it's binary classification
+        )
+
+    def forward(self, x):
+        return self.classifier(x)
