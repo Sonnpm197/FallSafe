@@ -8,7 +8,7 @@ import cv2
 # GENERATE keypoints here
 model = YOLO("yolo11n-pose.pt")  # load an official model
 
-input_folder = './fall_videos/processed'
+input_folder = './fall_videos/ur_videos_processed'
 
 all_keypoints = []
 
@@ -67,7 +67,7 @@ for filename in os.listdir(input_folder):
 
             # Store the result
             all_keypoints.append(flat_with_tag)
-    #break
+    break
 
 df = pd.DataFrame(all_keypoints)
 df.to_csv('./csv_data/ur_keypoints_yolo1.csv', index=False, header=False)
