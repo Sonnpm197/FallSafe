@@ -26,19 +26,19 @@ nn_model.eval()
 sequence_length = 10
 using_conf = False
 
-def process_single_frame(input_extraction, output_image,
-                        person_sequences, person_cnn_votes, person_rule_votes):
+def process_single_frame(input_extraction, output_image, person_sequences, person_cnn_votes, person_rule_votes):
     height, width = input_extraction.orig_img.shape[:2]
     boxes = input_extraction.boxes
     keypoints = input_extraction.keypoints
 
+    person_fall = False
     if is_none_or_empty(boxes) or is_none_or_empty(keypoints):
-        return
+        return person_fall
 
     for index in range(len(boxes)):
         conf_value = float(boxes.conf[index])
         if conf_value < 0.5:
-            return
+            return person_fall
 
         # Track each person's keypoints and store predictions
         keypoints_tensor = keypoints.data[index]
@@ -99,6 +99,9 @@ def process_single_frame(input_extraction, output_image,
             prediction_label = "FALL" if final_prediction == 1 else "SAFE"
             color = (0, 0, 255) if prediction_label == "FALL" else (0, 255, 0)  # Red for fall, green for safe
 
+            if prediction_label == "FALL":
+                person_fall = True
+
             # Draw the bounding box
             cv2.rectangle(output_image, (int(xmin), int(ymin)), (int(xmax), int(ymax)), color, 2)
 
@@ -106,12 +109,16 @@ def process_single_frame(input_extraction, output_image,
             label_position = (int(xmin), int(ymin) - 10)
             cv2.putText(output_image, prediction_label, label_position, cv2.FONT_HERSHEY_SIMPLEX, 0.9, color, 2)
 
+    return person_fall
 
-def process_image_with_yolo(input_img, person_sequences, person_cnn_votes, person_rule_votes):
+def process_image_with_yolo(input_img, person_sequences, person_cnn_votes, person_rule_votes, display=True):
     results = yolo_model(input_img, stream=True, verbose=False)
+    person_fall = False
     for frame_number, frame_extraction in enumerate(results):
-        process_single_frame(frame_extraction, input_img, person_sequences, person_cnn_votes, person_rule_votes)
-    cv2.imshow('Webcam', input_img) # write directly to the image
+        person_fall = process_single_frame(frame_extraction, input_img, person_sequences, person_cnn_votes, person_rule_votes)
+    if display:
+        cv2.imshow('Webcam', input_img)
+    return person_fall
 
 def process_video_ensemble_model(input_path, output_path):
     cap = cv2.VideoCapture(input_path)
