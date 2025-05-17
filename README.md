@@ -1,3 +1,5 @@
+Refer this repo for UI: https://github.com/Sonnpm197/FallSafe_UI 
+
 A fall detection project using ensemble of 3 models: ANN, LSTM and Rule-based
 
 FallSafe_Keypoint_Extraction... Files to extract 17 keypoints from a body and output into csv files
