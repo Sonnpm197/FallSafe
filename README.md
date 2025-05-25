@@ -1,4 +1,5 @@
 Refer this repo for UI: https://github.com/Sonnpm197/FallSafe_UI
+Extracted CSV dataset can be found: https://drive.google.com/drive/folders/1Q2-C6XPtgUebZG9zwDSu7ka3BXZd4P1C?usp=drive_link
 
 A fall detection project using ensemble of 3 models: ANN, LSTM and Rule-based
 
